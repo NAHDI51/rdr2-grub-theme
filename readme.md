@@ -63,6 +63,25 @@ $ sudo pacman -S grub-customizer
 
 ### Cloning the repository
 ```
-git clone https://github.com/NAHDI51/rdr2-grub-theme.git
+$ git clone https://github.com/NAHDI51/rdr2-grub-theme.git
 ```
+### Install a theme with GURB Customizer
 
+* Open grub customizer. Type
+```
+$ sudo grub-customizer
+```
+* Click on the **Appearance settings** tab
+* Enable *custom resolution* and select your resolution, e.g 3840x2160
+* Press the *add theme* button, then navigate to the directory where you cloned. Afterwards, navigate to themes. In other words, navigate to
+```
+$DIR/rdr2-grub-theme/themes
+```
+* Click on the archive file you want you want. In other words, click on
+```
+{$CHARACTER_NAME}.tar.gz
+```
+* Reboot your system and enjoy.
+```
+systemctl reboot
+```
