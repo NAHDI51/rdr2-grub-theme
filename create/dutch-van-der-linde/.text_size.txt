@@ -1,0 +1,27 @@
+Font name: Chinese Rocks Bold 50
+Max width: 35
+Max height: 52
+Font ascent: 45
+Font descent: 8
+Number of glyph: 510
+
+Font name: Chinese Rocks Bold 40
+Max width: 27
+Max height: 40
+Font ascent: 35
+Font descent: 6
+Number of glyph: 510
+
+Font name: Chinese Rocks Regular 40
+Max width: 26
+Max height: 39
+Font ascent: 34
+Font descent: 6
+Number of glyph: 510
+
+Font name: Chinese Rocks Bold 30
+Max width: 21
+Max height: 31
+Font ascent: 27
+Font descent: 5
+Number of glyph: 510
