@@ -7,14 +7,26 @@
 # 
 # 
 
-# colorize_output 
-#
-# Colorizes the output according to the flags. Flags are:
-#
+# dependency: include.sh
+. $(dirname "$0")/src/include.sh
+
+# Dependencies
+
+if [[ $(echo -e $__COLORS_SH) -eq "" ]]; then
+include 'src/colors.sh'
+fi
+
+
+
+# colorize_console: see $helpmsg for more options
 
 colorize_output() {
     local helpmsg=("
-        usage: colorize_output [-options ...] [texts]
-        
+        Usage: colorize_output [-options ...] [texts] \n
+        \n
+        Colorize the output using various options. Call this function with the \n
+        background and foreground color specified.
     ")
+
+    echo -e $helpmsg
 }

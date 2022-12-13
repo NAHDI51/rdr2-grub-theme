@@ -3,7 +3,7 @@
 # Check if this file has previously been defined
 # If not, define it, so that other files can include it.
 
-if [$(echo -e $__INCLUDE_SH) -eq ""]; then
+if [[ $(echo -e $__INCLUDE_SH) -eq '' ]]; then
     __INCLUDE_SH="1"
 fi
 
