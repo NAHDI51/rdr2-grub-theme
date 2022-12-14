@@ -70,4 +70,42 @@ colorize_output() {
         Foreground = White regular text \n
         Background = No background \n
     ")
+
+    #Stores the arguments called
+    ARGS=()
+    for Arg in $@
+    do
+        #append ARGS
+        ARGS[${#ARGS[@]}]=$Arg
+    done
+}
+
+# A generalized wrapper for colorize_output. Outputs messages
+# according to their indication (e.g info, error, warning). See
+# helpmsg for more details
+
+prompt() {
+    local helpmsg=("
+        Usage: \n
+        \n
+        INFO \n
+        1. Error prompt prints the prompt in BOLD RED. \n
+        2. Info prompt prints the prompt in LIGHT GRAY. \n
+        3. Warning prompt prints the prompt in yellow. \n 
+        4. Success prompt prints the prompt in GREEN. \n
+        5. Default prompt prints the prompt in WHITE. \n
+        \n
+    ")
+    case $1 in 
+        "-e" | "--error")
+            colorize_output -F -r --red $2 ;;
+        "-i" | "--info")
+            colorize_output -F -r --light-gray $2 ;;
+        "-w" | "--warning")
+            colorize_output -F -b --yellow $2 ;;
+        "-s" | "--success")
+            colorize_output -F -b --light-green $2 ;;
+        
+        colorize_output -F $1
+    esac
 }
