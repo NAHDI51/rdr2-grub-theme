@@ -7,18 +7,23 @@
 # 
 # 
 
+# define header: __PROMPT_SH
+if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
+__PROMPT_SH="1"
+fi
+
 # dependency: include.sh
 . $(dirname "$0")/src/include.sh
 
 # Dependencies
 
-if [[ $(echo -e $__COLORS_SH) -eq "" ]]; then
+if [[ $(echo -en $__COLORS_SH) -eq "" ]]; then
 include 'src/colors.sh'
 fi
 
 
 
-# colorize_console: see $helpmsg for more options
+# colorize_console: self explanatory, see $helpmsg for argument options.
 
 colorize_output() {
     local helpmsg=("
@@ -73,10 +78,10 @@ colorize_output() {
 
     #Stores the arguments called
     ARGS=()
-    for Arg in $@
+    for ARG in $@
     do
         #append ARGS
-        ARGS[${#ARGS[@]}]=$Arg
+        ARGS[${#ARGS[@]}]=$ARG
     done
 }
 
@@ -86,14 +91,30 @@ colorize_output() {
 
 prompt() {
     local helpmsg=("
-        Usage: \n
+        Usage: prompt [MODE] [STATEMENT]\n
         \n
-        INFO \n
+        This is a generalized wrapper for colorize_output. Output specific \n
+        indicative messages (e.g info, error, warning). \n
+        \n
+        This program assumes the first argument to be the mode, and the second \n
+        argument to be the statement. \n
+        \n
+        MODES \n
+        -e | --error \t\t Indicates that the following message is an ERROR prompt. \n
+        -i | --info  \t\t Indicates that the following message is an INFO prompt. \n
+        -w | --warning \t Indicates that the following message is a WARNING prompt. \n
+        -s | --success \t Indicates that the following message is a SUCCESS prompt. \n    
+        \n
+        DEFAULTS \n
         1. Error prompt prints the prompt in BOLD RED. \n
         2. Info prompt prints the prompt in LIGHT GRAY. \n
         3. Warning prompt prints the prompt in yellow. \n 
         4. Success prompt prints the prompt in GREEN. \n
         5. Default prompt prints the prompt in WHITE. \n
+        \n
+        For the time being, no argument-through changing of the defaults \n
+        is implemented. Thus, if you want to change, do it through the color \n
+        flags being called in below. \n
         \n
     ")
     case $1 in 
@@ -105,7 +126,8 @@ prompt() {
             colorize_output -F -b --yellow $2 ;;
         "-s" | "--success")
             colorize_output -F -b --light-green $2 ;;
-        
-        colorize_output -F $1
+        *)
+            echo -ne $1 ;;
     esac
+
 }
