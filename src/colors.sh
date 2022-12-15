@@ -11,8 +11,8 @@ if [$(echo -e $__COLOR_SH) -eq ""]; then
 fi
 
 #beginning and ending of a color prompt
-BEG="\e["
-END="\e[0m"
+BEGCOL="\e["
+ENDCOL="\e[0m"
 
 # D=DARK
 # L=LIGHT
@@ -21,33 +21,29 @@ BG_MODE=0
 FG_MODE=1
 
 # (Background codes, Foreground codes)
-BLACK=("40" "30")
-RED=("41" "31")
-GREEN=("42" "32")
-BROWN=("43" "43")
-BLUE=("44" "34")
-PURPLE=("45" "35")
-CYAN=("46" "36")
-LGRAY=("47" "37")
+BLACK=("30" "40")
+RED=("31" "41")
+GREEN=("32" "42")
+YELLOW=("33" "43")
+BLUE=("34" "44")
+MAGNETA=("35" "45")
+CYAN=("36" "46")
+LGRAY=("37" "47")
+GRAY=("90" "100")
+LRED=("91" "101")
+LGREEN=("92" "102")
+LYELLOW=("93" "103")
+LBLUE=("94" "104")
+LMAGNETA=("95" "105")
+LCYAN=("96" "106")
+WHITE=("97" "107")
+
 
 # formats
 
 NORMAL="0"
+BOLD="1"
+FAINT="2"
+ITALICS="3"
 UNDERLINED="4"
 BLINKING="5"
-#Bold isn't present here due to having different color contexts.
-
-# There, however, are some differences of codes, when we use
-# bold fonts. Thus, we need to define them distinctly.
-
-# Bold (background codes, foreground codes)
-
-B_DGRAY=("1;40" "1;30")
-B_LRED=("1;41" "1;31")
-B_LGREEN=("1;42" "1;32")
-B_YELLOW=("1;43" "1;33")
-B_LBLUE=("1;44" "1;34")
-B_LPURPLE=("1;45" "1;35")
-B_LCYAN=("1;46" "1;36")
-B_WHITE=("1;47" "1;37")
-
