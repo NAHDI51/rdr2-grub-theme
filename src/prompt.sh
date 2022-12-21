@@ -30,7 +30,8 @@ colorize_output() {
         Usage: colorize_output [-options] ... [text] \n
         \n
         Colorize the output using various options. Call this function with the  \n
-        background and foreground color operations specified. \n
+        background and foreground color operations specified. Additionally, the \n
+        formatting options can 
         \n
         OPERATIONS \n
         -B | --background [FORMAT] [COLOR] \t Format the background text \n
@@ -50,7 +51,7 @@ colorize_output() {
         -l | --blinking \t    Text blinks \n
         \n
         \n
-        COLORS\n
+        COLORS\nneofetch
         --black \n
         --red \n
         --green \n 
@@ -236,7 +237,7 @@ colorize_output() {
 
             errmsg=("
                 colorize_output: Multiple calling and specification of argument \n
-                \'${ARGS[i]}\'. Aborting function. \n
+                '${ARGS[i]}'. Aborting function. \n
             ")
 
             case "$GROUND" in
@@ -269,6 +270,7 @@ colorize_output() {
             if (( prev_i != i )); then
                 let "i--"
             fi
+
         else 
 
         # There might be some calling error if it reaches this part of the 
@@ -283,25 +285,25 @@ colorize_output() {
             break
         fi
 
-        errmsg=("
+    errmsg=("
         colorize_output: \n
         Ignoring argument '${ARGS[i]}' in position '${i}': No general specifier \n
         specified. \n
         \n
         Possible Reasons: \n
         1. This option doesn't exist. Check if you have done any typing error, \n
-           or any similar errors in general. Run 'colorize_output --help' for \n
-           viewing the list of available commands. \n
+        or any similar errors in general. Run 'colorize_output --help' for \n
+        viewing the list of available commands. \n
         2. You may not have specified foreground or background [-F or -B] prior \n
-           to calling this specifier. \n
+        to calling this specifier. \n
         3. You may have called the arguments with wrong ordering. The general \n
-           ordering is: \n
-           colorize_output [-OPTION] [FORMAT] [COLOR] \n
-        ")
+        ordering is: \n
+        colorize_output [-OPTION] [FORMAT] [COLOR] \n
+    ")
 
         #This error is not fatal, although it may output wrong colors. 
         prompt -w "Warning: "
-        prompt echo -e "$errmsg"
+        prompt "$errmsg"
 
         fi
     done
@@ -309,10 +311,9 @@ colorize_output() {
 
     # Last wrap around: if any of the options are not specified
 
-    if [[ "$FGCOL" -eq "DEFAULT" ]]; then
+    if [[ $(echo -en "$FGCOL") -eq "DEFAULT" ]]; then
         FGCOL=""
     fi
-
 
     if [[ $(echo -en "$BGCOL") -eq "DEFAULT" ]]; then
         BGCOL=""
@@ -322,7 +323,8 @@ colorize_output() {
     # echo -e "$BGCOL $FGCOL"
     local last=$#
     let "last--"
-    OUTPUT=${ARGS[last]}    
+    OUTPUT=${ARGS[last]}   
+    echo -e "$BGCOL;$FGCOLm"
     echo -en "${BEGCOL}${BGCOL};${FGCOL}m${OUTPUT}${ENDCOL}"
 }
 
