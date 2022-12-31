@@ -31,16 +31,13 @@ colorize_output() {
         \n
         Colorize the output using various options. Call this function with the  \n
         background and foreground color operations specified. Additionally, the \n
-        formatting options can 
+        formatting options for the foreground text can be specified. \n
         \n
         OPERATIONS \n
-        -B | --background [FORMAT] [COLOR] \t Format the background text \n
-        -F | --foreground [FORMAT] [COLOR] \t Format the foreground text \n
-        -h | --help \t \t \t \t               Print this text \n
-        \n
-        [Note] Do not rearrange this structure when calling the function. For \n
-        example, calling COLOR before FORMAT will result in an error. However, \n
-        OMITTING one or multiple option is okay. \n
+        -B | --background [COLOR] \t          Format the background text \n
+        -F | --foreground [COLOR] \t          Format the foreground text \n
+        -h | --help \t \t \t                  Print this text \n
+        -[FORMAT]   \t \t \t                  Formatizes the output (Check FORMATS) \n
         \n
         FORMATS\n
         -r | --regular \n 
@@ -51,22 +48,12 @@ colorize_output() {
         -l | --blinking \t    Text blinks \n
         \n
         \n
-        COLORS\nneofetch
-        --black \n
-        --red \n
-        --green \n 
-        --yellow \n
-        --blue \n
-        --magneta \n
-        --cyan \n
-        --light-gray \n
-        --gray \n
-        --light-red \n
-        --light-green \n
-        --light-yellow \n
-        --light-blue \n
-        --light-magneta \n
-        --light-cyan \n
+        COLORS\n
+        --black      \t\t --red         \t\t\t --green        \n
+        --yellow     \t\t --blue          \t\t --magneta      \n
+        --cyan       \t\t --light-gray    \t\t --gray         \n
+        --light-red  \t\t --light-green   \t\t --light-yellow \n
+        --light-blue \t\t --light-magneta   \t --light-cyan   \n
         --white \n
         \n
         \n
@@ -75,11 +62,20 @@ colorize_output() {
         COLOR      = White \n
         Foreground = White regular text \n
         Background = No background \n
+        \n
+        NOTES \n
+        1. You must call the color flag if you call the -B or -F flags. Calling \n
+        -B or -F without --color, or calling --color without -B or -F will result in \n
+        a warning that the specified option will be omitted. \n
+        2. help message immediately terminates the program. Thus, do not call any \n
+        other flags with --help. \n
     ")
 
     #Stores the arguments called
     # echo $#
-    ARGS=()
+
+    # Damn this control flow prove to be a real pain in the ass
+    local ARGS=()
     for ARG in "$@"
     do
         #append ARGS
@@ -92,92 +88,108 @@ colorize_output() {
     #   echo -e "$i ${ARGS[i]}"
     # done
 
-    #HIERARCHY
-
-    # 1. Help will always come first. This is a way to ensure that it doesn't 
-    #    overlap with the other arguments.
-
-    # 2. Then comes foreground/background option. Any specifier coming before
-    #    it leads to termination of the function, with return 1.
-
-    # 3. After bg/fg is specified, we will parse the options with specified
-    #    arguments: FORMAT and COLOR, taking defaults wherever needed.
-
-    #    Note that rearrangement of the options is not implemented. If you want
-    #    to implement it, just keep reading the arguments till the next major
-    #    argument (-B and -F in this case), and create an array of all the possible
-    #    specifier of a certain mode (e.g -r, -b, -f, -i, -u, and -l for FORMAT). 
-    #    Then, match the array, and the number of arguments, with appropriate
-    #    specifiers, and parse.
-
-    #    Similarly, you can write an amortized algorithm. Regardless, the details
-    #    are redundant for the scope of this code right now. 
-
-
     # Parse the arguments 
-    FGCOL="DEFAULT"
-    BGCOL="DEFAULT"
+    FGCOL=0
+    BGCOL=0
+    FORM=-1
 
-    for  (( i=0; i<$#; i++))
-    do
+    for  (( i=0; i<$#; i++)); do
         local GROUND=-1
         local COLOR=""
-        local FORMAT=""
+        local FORMAT="-1"
         local errmsg
         local prev_i=$i
 
-        #1
+        echo -e ${ARGS[i]}
+
         case ${ARGS[i]} in
             "-h" | "--help")
                 echo -e $helpmsg
                 return 0
                 ;;
-        esac
 
-        #2 
-        case ${ARGS[i]} in
             "-B" | "--background")
                 GROUND=$BG_MODE
-                let "i++"
                 ;;
+
             "-F" | "--foreground")
                 GROUND=$FG_MODE 
-                let "i++"
                 ;;
+            
+            # Formats
+            "-r" | "--regular")
+                FORMAT=$REGULAR
+                ;;
+            "-b" | "--bold")
+                FORMAT=$BOLD
+                ;;
+            "-f" | "--faint")
+                FORMAT=$FAINT
+                ;;
+            "-i" | "--italics")
+                FORMAT=$ITALICS
+                ;;
+            "-u" | "--underlined")
+                FORMAT=$UNDERLINED
+                ;;
+            "-l" | "--blinking")
+                FORMAT=$BLINKING
+                ;;
+            *)
+            # There might be some calling error if it reaches this part of the 
+            # function. In that case, we must warn the caller that the call had
+            # some flaws. We will also give them general troubleshooting directions.
+
+            # Firstly, if the argument is the last of the arguments, it is for printing.
+            local tmp=$#
+            let "tmp--"
+        
+            if [[ "$i" -ge "$tmp" ]]; then
+                break
+            fi
+
+errmsg=("
+colorize_output:
+
+Ignoring argument '${ARGS[i]}' in position '${i}': No general specifier
+specified.
+
+Possible Reasons:
+
+1. This option doesn't exist. Check if you have done any typing error,
+or any similar errors in general. Run 'colorize_output --help' for
+viewing the list of available commands. 
+
+2. You may not have specified foreground or background [-F or -B] prior 
+to calling this specifier.
+
+3. You may have called the arguments with wrong ordering. The general 
+ordering is:
+
+colorize_output [OPTION] [FORMAT] [COLOR]
+")
+
+            #This error is not fatal, although it may output wrong colors. 
+            prompt -w "Warning: \n"
+            echo -e "$errmsg"
+            continue
+
+            ;;
         esac
+
+        # The argument has been used, otherwise it won't reach this part of the
+        # function 
+
+        let "i++"
 
         #3 
         # echo "${ARGS[i]} $i $GROUND"
         # Sub-specifiers
 
-        if [[ "$GROUND" -ne "-1" ]]; then
-
-            local toggle=0
-            case ${ARGS[i]} in 
-                "-r" | "--regular")
-                    FORMAT=$REGULAR ;;
-                "-b" | "--bold")
-                    FORMAT=$BOLD ;;
-                "-f" | "--faint")
-                    FORMAT=$FAINT ;;
-                "-i" | "--italics")
-                    FORMAT=$ITALICS ;;
-                "-u" | "--underlined")
-                    FORMAT=$UNDERLINED ;;
-                "-l" | "--blinking")
-                    FORMAT=$BLINKING ;;
-                *)     
-                    toggle=1
-                    FORMAT=$REGULAR ;;
-            esac
-
-            # Check if the argument has been used
-            if [[ "$toggle" -eq "0" ]]; then 
-                let "i++"
-            fi
-
-            toggle=0
-            # echo ${ARGS[i]}
+        TOGGLE=0
+        # Sub color specifiers for foreground and background
+        if (( GROUND != -1 )); then
+            TOGGLE=1
             case ${ARGS[i]} in
                 "--black") 
                     COLOR=${BLACK[GROUND]} ;;
@@ -212,120 +224,116 @@ colorize_output() {
                 "--white")
                     COLOR=${WHITE[GROUND]} ;;
                 *)  
-                    toggle=1
-                    if [[ GROUND==BG_MODE ]]; then
-            
-                    #Change these lines to change your default background color
-                        COLOR=""
-                        FORMAT=""
-                    elif [[ GROUND==FG_MODE ]]; then
-
-                    # Change this line to change your default foreground color
-                        COLOR=${WHITE[GROUND]}
-
-                    fi
+                    let "i--"
+                    errmsg=("
+                        Color not spcified with the argument "${ARGS[i]}". Omitting the argument.
+                    ")
+                    prompt --warning "Error: "
+                    prompt "$errmsg \n"
+                    continue
             esac
 
-
-            # Check if the argument has been used
-            if [[ "$toggle" -eq "0" ]]; then 
+            # The sub option must be used
+            if (( TOGGLE == 1 )); then
                 let "i++"
             fi
+            # Reset
+            TOGGLE=0
 
             # Note that these functions are called if and only if the current
             # iteration is a specifier iteration. 
 
+            # Prompts if any of the modes go wrong
             errmsg=("
-                colorize_output: Multiple calling and specification of argument \n
-                '${ARGS[i]}'. Aborting function. \n
-            ")
+                colorize_output: Multiple calling and specification of argument FOREGROUND/BACKGROUND. Omitting the argument.
+                ")
 
             case "$GROUND" in
+
                 "$BG_MODE")
-                    if [[ $(echo -en $BGCOL) -eq "DEFAULT" ]]; then
-                        BGCOL="${FORMAT};${COLOR}"
+                    if [[ $(echo -en $BGCOL) -eq "0" ]]; then
+                        BGCOL=${COLOR}
                     
                     # Multiple call, redundancy error 
                     else
-                        prompt -e "ERROR: "
-                        prompt $errmsg
+                        let "i--"
+                        prompt --warning "WARNING: "
+                        prompt "$errmsg \n"
 
-                        return 1
+                        continue
                     fi
                     ;;
+
                 "$FG_MODE")
-                    if [[ $(echo -en $FGCOL) -eq "DEFAULT" ]]; then
-                        FGCOL="${FORMAT};${COLOR}"
+                    if [[ $(echo -en $FGCOL) -eq "0" ]]; then
+                        FGCOL="${COLOR}"
 
                     # Multiple call, redundancy error 
                     else 
-                        prompt -e "ERROR: "
-                        prompt $errmsg 
+                        let "i--"
+                        prompt --warning "WARNING: "
+                        prompt "$errmsg \n"
 
-                        return 1
+                        continue
                     fi
                     ;;
-            esac
+            esac          
+        fi
 
-            if (( prev_i != i )); then
+        errmsg=("
+            colorize_output: Multiple calling and specification of argument FORMAT. Omitting the argument.
+        ")  
+
+        if [[ "$FORMAT" -ne "-1" ]]; then
+
+            # Checks whether format has been specified before. 
+            # If yes, then the argument is omitted.
+            # Else, the argument is used.
+
+            # While the argument is omitted, it does not abort the function.
+
+            if [[ "$FORM" -ne "-1" ]]; then
                 let "i--"
+                prompt --warning "WARNING: "
+                prompt "$errmsg \n"
+
+                continue
             fi
-
-        else 
-
-        # There might be some calling error if it reaches this part of the 
-        # function. In that case, we must warn the caller that the call had
-        # some flaws. We will also give them general troubleshooting directions.
-
-        # Firstly, if the argument is the last of the arguments, it is for printing.
-        local tmp=$#
-        let "tmp--"
+            FORM="${FORMAT}"
+        fi
         
-        if [[ "$i" -ge "$tmp" ]]; then
-            break
-        fi
-
-    errmsg=("
-        colorize_output: \n
-        Ignoring argument '${ARGS[i]}' in position '${i}': No general specifier \n
-        specified. \n
-        \n
-        Possible Reasons: \n
-        1. This option doesn't exist. Check if you have done any typing error, \n
-        or any similar errors in general. Run 'colorize_output --help' for \n
-        viewing the list of available commands. \n
-        2. You may not have specified foreground or background [-F or -B] prior \n
-        to calling this specifier. \n
-        3. You may have called the arguments with wrong ordering. The general \n
-        ordering is: \n
-        colorize_output [-OPTION] [FORMAT] [COLOR] \n
-    ")
-
-        #This error is not fatal, although it may output wrong colors. 
-        prompt -w "Warning: "
-        prompt "$errmsg"
-
-        fi
+        # Offset
+        let "i--"
     done
-
 
     # Last wrap around: if any of the options are not specified
 
-    if [[ $(echo -en "$FGCOL") -eq "DEFAULT" ]]; then
-        FGCOL=""
+    FINAL=""
+    if (( FORM != -1 )); then
+        FINAL+="$FORM;"
     fi
+    
+    if (( BGCOL != 0 )); then
+        FINAL+="$BGCOL;"
+    fi 
 
-    if [[ $(echo -en "$BGCOL") -eq "DEFAULT" ]]; then
-        BGCOL=""
+    if (( FGCOL != 0 )); then
+        FINAL+="$FGCOL"
+    
+    else 
+        FINAL+="${WHITE[0]}"
     fi
-
 
     # echo -e "$BGCOL $FGCOL"
     local last=$#
     let "last--"
-    OUTPUT=${ARGS[last]}   
-    echo -e "$BGCOL;$FGCOLm"
-    echo -en "${BEGCOL}${BGCOL};${FGCOL}m${OUTPUT}${ENDCOL}"
+    OUTPUT=${ARGS[last]}  
+    
+    # This line is omitted because it was causing some semi-colon errors
+    # when the other forms aren't called.
+
+    # echo -en "${BEGCOL}${FORM};${BGCOL};${FGCOL}m${OUTPUT}${ENDCOL}"
+    echo -en "${BEGCOL}${FINAL}m${OUTPUT}${ENDCOL}"
 }
 
 # A generalized wrapper for colorize_output. Outputs messages
@@ -357,7 +365,7 @@ prompt() {
         4. Success prompt prints the prompt in GREEN. \n
         5. Default prompt prints the prompt in WHITE. \n
         6. Caution prompt blinks the background in RED, while prints the prompt \n
-           in WHITE. \n
+           in BLACK. \n
         \n
         For the time being, no argument-through changing of the defaults \n
         is implemented. Thus, if you want to change, do it through the color \n
@@ -368,15 +376,15 @@ prompt() {
         "-h" | "--help")
             echo -e "$helpmsg" ;;
         "-e" | "--error")
-            colorize_output -F -r --red "$2" ;;
+            colorize_output -r -F --red "$2" ;;
         "-i" | "--info")
-            colorize_output -F -r --light-gray "$2" ;;
+            colorize_output -r -F --light-gray "$2" ;;
         "-w" | "--warning")
-            colorize_output -F -b --yellow "$2" ;;
+            colorize_output -b -F --yellow "$2" ;;
         "-s" | "--success")
-            colorize_output -F -b --light-green "$2" ;;
+            colorize_output -b -F --light-green "$2" ;;
         "-c" | "--caution")
-            colorize_output -B -b --light-red -F -r --white "$2" ;;
+            colorize_output -l -B --light-red -F --black "$2" ;;
         *)
             echo -ne "$1" ;;
     esac
