@@ -37,20 +37,60 @@ Usage: list_if DIRECTORY CONDITION
         
 The list if function lists the contents of a directory according 
 to the CONDITION specified. This is intended to be a simple wrap up 
-to the conventional ls file. Thus, there are no default options. 
+to the conventional ls file. Thus, there are no default options,
+meaning that you must always specify the DIRECTORY and CONDIDTION.
 Furthermore, only the files of the first depth is considered. 
         
 the CONDITION is called for every single entry of the lists in the
 traversal. The default variable call for each of the entries is 
 "$ENTRY".
 ')
+
+    # Any log from this function will start with this. 
+    local LOG_HEADER=$(prompt -s "src/list.sh/list_if: ")
     
+    # help message display
     case "$1" in 
         "-h" | "--help" | "--Help" )
             prompt -i "$helpmsg"
             return 0
             ;;
     esac
+
+    local DIRECTORY="${1}"
+    local CONDITION="${2}"
+
+
+    # CONDITION is empty. 
+    echo -e "$DIRECTORY"
+    if [ "$DIRECTORY" == "" ]; then
+        echo -en "$LOG_HEADER"
+        prompt -e "FATAL ERROR: "
+        echo -e "Directory not specified. Returning the function with exit status 1."
+        # return 1
+    fi
+
+    # DIRECTORY is wrongly specified.. 
+    if [ ! -d "$DIRECTORY" ]; then 
+        echo -en "$LOG_HEADER"
+        prompt -e "FATAL ERROR: "
+        echo -e "Specified \"$DIRECTORY\" is not a directory. Returning the function with exit status 1."
+        # return 1
+    fi
+
+    # CONDITION is empty. 
+    if [ "$CONDITION" == "" ]; then 
+        echo -en "$LOG_HEADER"
+        prompt -e "FATAL ERROR: "
+        echo -e "Condition not specified. Returning the function with exit status 1."
+        return 1
+    fi 
+
+    local ENTRIES=$(ls -a "$1" 2>&1)
+    for ENTRY in "$ENTRIES"
+    do 
+        echo -e "$ENTRY"
+    done 
 }
 
 
