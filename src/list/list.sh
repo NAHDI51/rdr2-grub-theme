@@ -44,6 +44,12 @@ Furthermore, only the files of the first depth is considered.
 the CONDITION is called for every single entry of the lists in the
 traversal. The default variable call for each of the entries is 
 "$ENTRY".
+
+Beware that the commands will be executed just as it is written. 
+This is why, it is recommended flushing or adjusting the stdin, stdout
+and stderr accordingly. For example, if your command is "ls -la .", it
+will print all the output to stdout. To elude it, do "ls -la 2>&1 > 
+/dev/null".
 ')
 
     # Any log from this function will start with this. 
@@ -86,10 +92,23 @@ traversal. The default variable call for each of the entries is
         return 1
     fi 
 
-    local ENTRIES=$(ls -a "$1" 2>&1)
+    # fetch all the entries
+    # ISSUE: entries are not splitted according to newline
+    local ENTRIES=$(ls -a "$DIRECTORY" 2>&1)
+    local TOTAL=0
     for ENTRY in "$ENTRIES"
     do 
-        echo -e "$ENTRY"
+        # Run the condition. The user is responsible for handling
+        # the buffer output. 
+
+        "$CONDITION"
+
+        # Do if the previous condition is right. 
+
+        if [ $? == "0" ]; then
+            colorize_output -F --blue -b "[1] "
+            colorize_output -F --yellow -u "$ENTRY\n"
+        fi
     done 
 }
 
