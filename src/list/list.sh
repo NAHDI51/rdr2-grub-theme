@@ -41,9 +41,8 @@ to the conventional ls file. Thus, there are no default options,
 meaning that you must always specify the DIRECTORY and CONDIDTION.
 Furthermore, only the files of the first depth is considered. 
         
-the CONDITION is called for every single entry of the lists in the
-traversal. The default variable call for each of the entries is 
-"$ENTRY".
+the CONDITION should be a function being called. Then, then each of 
+the $ENTRY will be called as the $1 argument of CONDITION. 
 
 Beware that the commands will be executed just as it is written. 
 This is why, it is recommended flushing or adjusting the stdin, stdout
@@ -66,8 +65,7 @@ will print all the output to stdout. To elude it, do "ls -la 2>&1 >
     local DIRECTORY="${1}"
     local CONDITION="${2}"
 
-
-    # CONDITION is empty. 
+    # DIRECTORY is empty. 
     echo -e "$DIRECTORY"
     if [ "$DIRECTORY" == "" ]; then
         echo -en "$LOG_HEADER"
@@ -95,19 +93,28 @@ will print all the output to stdout. To elude it, do "ls -la 2>&1 >
     # fetch all the entries
     # ISSUE: entries are not splitted according to newline
     local ENTRIES=$(ls -a "$DIRECTORY" 2>&1)
-    local TOTAL=0
-    for ENTRY in "$ENTRIES"
+    readarray -t DIRS <<<"$ENTRIES"
+
+    local TOTAL=1
+    for PATH in ${DIRS[@]}
     do 
+
+        if [ "$PATH" == "." ] || [ "$PATH" == ".." ]; then 
+            continue
+        fi
+
         # Run the condition. The user is responsible for handling
         # the buffer output. 
 
+        ENTRY="$DIRECTORY/$PATH"
         "$CONDITION"
 
         # Do if the previous condition is right. 
 
         if [ $? == "0" ]; then
-            colorize_output -F --blue -b "[1] "
+            colorize_output -F --blue -b "[$TOTAL] "
             colorize_output -F --yellow -u "$ENTRY\n"
+            let "TOTAL++"
         fi
     done 
 }
