@@ -1,3 +1,17 @@
+# Copyright (C) 2023 NAHDI51
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #!/bin/bash
 
 # This header provides the choice based listing utility.
@@ -19,11 +33,11 @@ fi
 # Dependencies
 
 if [[ $(echo -en $__COLORIZE_OUTPUT_SH) -eq "" ]]; then
-include 'src/colorize_output.sh'
+include 'src/colors/colorize_output.sh'
 fi
 
 if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
-include 'src/prompt.sh'
+include 'src/colors/prompt.sh'
 fi 
 
 
@@ -35,7 +49,7 @@ list_if() {
 local helpmsg=('
 Usage: list_if DIRECTORY CONDITION  
         
-The list if function lists the contents of a directory according 
+The list if function @returns the contents of a directory according 
 to the CONDITION specified. This is intended to be a simple wrap up 
 to the conventional ls file. Thus, there are no default options,
 meaning that you must always specify the DIRECTORY and CONDIDTION.
@@ -49,6 +63,58 @@ This is why, it is recommended flushing or adjusting the stdin, stdout
 and stderr accordingly. For example, if your command is "ls -la .", it
 will print all the output to stdout. To elude it, do "ls -la 2>&1 > 
 /dev/null".
+
+NOTES ON WRITING THE CONDITION
+-------------------------------------------------------------------------
+Writing the condition is entirely up to the user. The user is responsible 
+for desiging however the condition will be applied. From this source code,
+only he line 
+
+eval "$CONDITION" 
+
+will be applied, so the program is only responsible for parsing the raw
+string. 
+
+One of my favorite ways to call a condition is to call a function, and 
+place it inside a variable. For example, suppose we have the variable:
+
+compfunc="
+compfunc() {
+    if [ "$(find $ENTRY -name "theme.txt" | awk -F/ "{print \$NF}")" == "theme.txt" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+"
+[Replace the double quotes above with single quotes]
+
+which finds for the "theme.txt" file, and returns true, if it finds so. 
+Now, we can call the function such as the following:
+
+list_if create "$compfunc"
+
+This will execute these line of codes using eval. 
+
+eval "$CONDITION"
+
+which, necessarily, is the same as injecting a block of codes inside a
+source code, and executing them. 
+
+-----------------------------------------------------------------------
+
+NOTES: 
+
+1. you can use the directory you are currently traversing by calling
+"$DIRECTORY/$PATH", or "$ENTRY"
+
+2. On default, the list_if function echos the array. Thus, if you want
+to use the returned value in another function or block, you can do the
+following:
+
+RETURNED_LIST = $(list_if DIRECTORY CONDITION)
+
+$RETURNED_LIST will be an array with the resulting strings or directories.
 ')
 
     # Any log from this function will start with this. 
@@ -66,7 +132,6 @@ will print all the output to stdout. To elude it, do "ls -la 2>&1 >
     local CONDITION="${2}"
 
     # DIRECTORY is empty. 
-    echo -e "$DIRECTORY"
     if [ "$DIRECTORY" == "" ]; then
         echo -en "$LOG_HEADER"
         prompt -e "FATAL ERROR: "
@@ -95,28 +160,31 @@ will print all the output to stdout. To elude it, do "ls -la 2>&1 >
     local ENTRIES=$(ls -a "$DIRECTORY" 2>&1)
     readarray -t DIRS <<<"$ENTRIES"
 
-    local TOTAL=1
-    for PATH in ${DIRS[@]}
-    do 
+    # Initialize the list storage. All the right values are stored here.
+    local ENTRIES=()
 
-        if [ "$PATH" == "." ] || [ "$PATH" == ".." ]; then 
+    for DIR in ${DIRS[@]}
+    do 
+        if [ "$DIR" == "." ] || [ "$DIR" == ".." ]; then 
             continue
         fi
 
         # Run the condition. The user is responsible for handling
-        # the buffer output. 
+        # the buffer output. Check helpmsg for more details as to
+        # how to do so.
 
-        ENTRY="$DIRECTORY/$PATH"
-        "$CONDITION"
+        ENTRY+=("$DIRECTORY/$DIR")
 
-        # Do if the previous condition is right. 
+        # echo "$CONDITION"
+        eval "$CONDITION"
 
-        if [ $? == "0" ]; then
-            colorize_output -F --blue -b "[$TOTAL] "
-            colorize_output -F --yellow -u "$ENTRY\n"
-            let "TOTAL++"
+        # Do if the previous condition was rightly executed. 
+        if [ $? == 0 ]; then
+            ENTRIES+=("$ENTRY")
         fi
-    done 
+    done
+
+    echo "${ENTRIES[@]}"
 }
 
 
