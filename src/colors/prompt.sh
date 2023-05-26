@@ -55,15 +55,16 @@ prompt() {
         "-h" | "--help")
             echo -e "$helpmsg" ;;
         "-e" | "--error")
-            colorize_output -r -F --red $2 ;;
+            colorize_output -r -F --red "$2" ;;
         "-i" | "--info")
-            colorize_output -r -F --light-gray $2 ;;
+            colorize_output -r -F --light-gray "$2" ;;
         "-w" | "--warning")
-            colorize_output -b -F --yellow $2 ;;
+            # echo -e "$1 $2"
+            colorize_output -b -F --yellow "$2" ;;
         "-s" | "--success")
-            colorize_output -b -F --light-green $2 ;;
+            colorize_output -b -F --light-green "$2" ;;
         "-c" | "--caution")
-            colorize_output -l -B --light-red -F --black $2 ;;
+            colorize_output -l -B --light-red -F --black "$2" ;;
         *)
             echo -ne $1 ;;
     esac

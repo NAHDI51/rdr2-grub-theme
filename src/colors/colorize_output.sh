@@ -148,7 +148,8 @@ colorize_output() {
             # Firstly, if the argument is the last of the arguments, it is for printing.
             local tmp=$#
             let "tmp--"
-        
+            let "tmp--"
+            
             if [[ "$i" -ge "$tmp" ]]; then
                 break
             fi
@@ -172,7 +173,6 @@ ordering is:
 
 colorize_output [OPTION] [FORMAT] [COLOR]
 ")
-
             #This error is not fatal, although it may output wrong colors. 
             prompt -w "Warning: \n"
             echo -e "$errmsg"
@@ -315,6 +315,8 @@ colorize_output [OPTION] [FORMAT] [COLOR]
         let "i--"
     done
 
+    # Stop using i as a global variable, and stop upon the iteration.
+    unset i
     # Last wrap around: if any of the options are not specified
 
     local FINAL=""
