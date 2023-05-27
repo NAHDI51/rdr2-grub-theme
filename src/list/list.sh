@@ -68,15 +68,16 @@ NOTES ON WRITING THE CONDITION
 -------------------------------------------------------------------------
 Writing the condition is entirely up to the user. The user is responsible 
 for desiging however the condition will be applied. From this source code,
-only he line 
+only he lines
 
 eval "$CONDITION" 
+compfunc
 
 will be applied, so the program is only responsible for parsing the raw
 string. 
 
-One of my favorite ways to call a condition is to call a function, and 
-place it inside a variable. For example, suppose we have the variable:
+There should be a function "compfunc" inside the string, which will be called
+as the CONDITION in this file. For example:
 
 compfunc="
 compfunc() {
@@ -96,7 +97,8 @@ list_if create "$compfunc"
 
 This will execute these line of codes using eval. 
 
-eval "$CONDITION"
+eval "$CONDITION"  # gluing the function
+compfunc           # The function call
 
 which, necessarily, is the same as injecting a block of codes inside a
 source code, and executing them. 
@@ -173,10 +175,13 @@ $RETURNED_LIST will be an array with the resulting strings or directories.
         # the buffer output. Check helpmsg for more details as to
         # how to do so.
 
-        ENTRY+=("$DIRECTORY/$DIR")
+        ENTRY=("$DIRECTORY/$DIR")
 
+        # echo -en "$ENTRY "
         # echo "$CONDITION"
         eval "$CONDITION"
+        compfunc
+        # echo "$?"
 
         # Do if the previous condition was rightly executed. 
         if [ $? == 0 ]; then
@@ -184,6 +189,9 @@ $RETURNED_LIST will be an array with the resulting strings or directories.
         fi
     done
 
+    if [[ ${#ENTRIES[@]} == 0 ]]; then 
+        prompt -w "$LOG_HEADER: Warning: No entires with the specified CONDITION found.\n"
+    fi
     echo "${ENTRIES[@]}"
 }
 
