@@ -30,30 +30,66 @@ fi
 
 # Dependencies
 
-if [[ $(echo -en $__COLORIZE_OUTPUT_SH) -eq "" ]]; then
+if [[ $__COLORIZE_OUTPUT_SH -eq "" ]]; then
 include 'src/colors/colorize_output.sh'
 fi
 
-if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
+if [[ $__PROMPT_SH -eq "" ]]; then
 include 'src/colors/prompt.sh'
 fi 
 
-if [[ $(echo -en $__ITERATION_SH) -eq "" ]]; then 
-include 'src/list/iteration.sh'
+if [[ "$__ALIASES_SH" -eq "" ]]; then 
+    include 'src/aliases.sh'
 fi 
 
-if [[ $(echo -en $__LIST_SH) -eq "" ]]; then 
-include 'src/list/list.sh
-fi 
+# Choice from a range: [A-Z], [a-z], or [1-N]...
+# Two arguments, specifying the first and the last.
+
+ask() {
+}
 
 choiceRange() {
-    
+    local helpmsg=('
+SYNTAX: choiceRange [START] [END]
+
+The choiceRange function takes two arguments, START and END, 
+and creates a choice based system. 
+
+START and END format
+------------------------------------------------------------
+
+The $START and $END variables can hold three types: A, a, and 1.
+Furthermore, both $START and $END has to be of the same type. 
+Any exception to these rules will result in a warning, and the 
+function will return 127. 
+
+Example:
+
+1. choiceRange a j 
+This will query between the choices: [a-j].
+
+2. choiceRange 1 29
+This will query between the choices: [1-29].
+
+@return value: the choice chosen
+')   
+    eval "$PRINT_HELPMSG"
+
 }
 
 choiceYN() {
+    local helpmsg=('
+SYNTAX: choiceYN 
 
+The choiceYN function creates a choice based system dependant
+on Y or N. Thus, no user argument is to be provided. 
+
+@return value: the choice chosen
+    ')
+
+    eval "$PRINT_HELPMSG"
 }
 
 choiceCustom() {
-
+    echo "Hello world"
 }
