@@ -123,12 +123,7 @@ $RETURNED_LIST will be an array with the resulting strings or directories.
     local LOG_HEADER=$(prompt -s "src/list.sh/list_if: ")
     
     # help message display
-    case "$1" in 
-        "-h" | "--help" | "--Help" )
-            prompt -i "$helpmsg"
-            return 0
-            ;;
-    esac
+    eval "$PRINT_HELPMSG"
 
     local DIRECTORY="${1}"
     local CONDITION="${2}"
@@ -190,7 +185,7 @@ $RETURNED_LIST will be an array with the resulting strings or directories.
     done
 
     if [[ ${#ENTRIES[@]} == 0 ]]; then 
-        prompt -w "$LOG_HEADER: Warning: No entires with the specified CONDITION found.\n"
+        colorize_output -F --yellow -B --red "$LOG_HEADER: Warning: No entires with the specified CONDITION found.\n"
     fi
     echo "${ENTRIES[@]}"
 }

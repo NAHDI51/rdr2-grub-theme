@@ -25,6 +25,13 @@ if [[ "$__ITERATION_SH" -eq "" ]]; then
     include 'src/list/iteration.sh'
 fi 
 
+if [[ "$__CHOICE_SH" -eq "" ]]; then 
+    include 'src/list/choice.sh'
+fi 
+
+if [[ "$__ALIASES_SH" -eq "" ]]; then 
+    include 'src/aliases.sh'
+fi 
 
 # NOTE: for the work of this application, we can list an element eligible IFF:
 # 1. The entry is a directory. 
@@ -50,4 +57,6 @@ ARGS=$(list_if create "$compfunc")
 # iterate 'a' 1 2 2 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1
 iterate 'a' ${ARGS[@]}
 
-# print_thumbnail
+print_thumbnail
+
+choiceRange --help

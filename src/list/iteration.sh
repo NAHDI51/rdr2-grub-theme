@@ -62,12 +62,7 @@ Run iterate --help to view this message.
     local LOG_HEADER="src/list/iteration.sh"
 
     # help message display
-    case "$1" in 
-        "-h" | "--help" | "--Help" )
-            prompt -i "$helpmsg"
-            return 0
-            ;;
-    esac
+    eval "$PRINT_HELPMSG"
 
     # The function will have at least 1 mandatory argument (provided
     # that there can be 0 or more optional list arguments)
@@ -77,15 +72,20 @@ Run iterate --help to view this message.
         return 127
     fi 
 
+    # First assign the type, then move on to listing arguments.
     local LIST_TYPE=$1
     shift 1
-    local ARGS=("$@")  # Store arguments in an array
 
+    # Store arguments in an array
+    local ARGS=("$@") 
+
+    # Unsupported arguments: self explanatory. 
     if [[ $LIST_TYPE == 'a' || $LIST_TYPE == 'A' ]] && (( ${#ARGS[@]} > 26 )); then
         colorize_output -F --yellow -B --red "$LOG_HEADER: Warning: too many arguments for the type: $LIST_TYPE. Using TYPE 1 instead."
         LIST_TYPE='1'
     fi
     
+    # Number of arguments and the iterator
     local n=${#ARGS[@]}
     local i=0
 
@@ -136,8 +136,10 @@ Run iterate --help to view this message.
         echo -en "\n"
     done
 
+    # Unset global variable, potential collision otherwise 
     unset i
 
+    # First element, and last element
     local RETURN_VALUE=("$first_char" "$char")
     echo "${RETURN_VALUE[@]}"  # Return the array elements
 }
