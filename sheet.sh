@@ -57,6 +57,8 @@ ARGS=$(list_if create "$compfunc")
 # iterate 'a' 1 2 2 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1
 iterate 'a' ${ARGS[@]}
 
-print_thumbnail
+# print_thumbnail
 
-choiceRange --help
+# choiceRange --help
+
+choiceYN
