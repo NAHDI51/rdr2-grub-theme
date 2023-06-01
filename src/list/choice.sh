@@ -99,7 +99,7 @@ askChoices() {
         
     done 
     
-    echo "Your choice is: $FINAL_CHOICE"
+    RETURN_VALUE="$FINAL_CHOICE"
 }
 
 choiceCustom() {
@@ -108,6 +108,9 @@ SYNTAX: choiceCustom [CHOICES...]
 
 The choiceCustom function takes an array of choices, and thinks
 of them as custom choices. 
+
+NOTE: use a different file descriptor when trying to assign the
+returned value directly. 
 
 Example:
 
@@ -144,6 +147,8 @@ This call consideres 7 individual choices: a, b, c, f, 1, 2, and 6.
     unset i
 
     #Invoke the choice based system
+    #No need to handle return value: the return value from the previous function is 
+    #the return value of this function.
     askChoices CHOICES
     unset CHOICES
 }
@@ -167,6 +172,9 @@ The $START and $END variables can hold three types: A, a, and 1.
 Furthermore, both $START and $END have to be of the same type. 
 Any exception to these rules will result in a warning, and the 
 function will return 127. 
+
+NOTE: use a different file descriptor when trying to assign the
+returned value directly. 
 
 Example:
 
@@ -222,7 +230,9 @@ This will query between the choices: [1-29].
     esac
 
     # echo "${CHOICES[@]}"
-    
+
+    #No need to handle return value: the return value from the previous function is 
+    #the return value of this function.
     choiceCustom "${CHOICES[@]}"
 }
 
@@ -234,9 +244,14 @@ SYNTAX: choiceYN
 The choiceYN function creates a choice based system dependant
 on Y or N. Thus, no user argument is to be provided. 
 
+NOTE: use a different file descriptor when trying to assign the
+returned value directly. 
+
 @return value: the choice chosen
-')
+')  
 
     eval "$PRINT_HELPMSG"
+    #No need to handle return value: the return value from the previous function is 
+    #the return value of this function.
     choiceCustom y n
 }
