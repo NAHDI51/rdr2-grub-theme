@@ -6,10 +6,6 @@
 # Check if this file has previously been defined
 # If not, define it, so that other files can include it.
 
-if [$(echo -e $__COLOR_SH) -eq ""]; then
-    __COLOR_SH="1"
-fi
-
 #beginning and ending of a color prompt
 BEGCOL="\e["
 ENDCOL="\e[0m"

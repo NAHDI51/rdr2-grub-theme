@@ -5,29 +5,14 @@
 # output. This will take standard color codes of @background and
 # @foreground, and output accordingly.
 
-
-# define header: _COLORIZE_OUTPUT_SH
-if [[ $(echo -en $__COLORIZE_OUTPUT_SH) -eq "" ]]; then
-__COLORIZE_OUTPUT_SH="1"
-fi
-
 # dependency: include.sh
-. $(dirname "$0")/src/include.sh
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
 
 # Dependencies
-
-if [[ $(echo -en $__COLORS_SH) -eq "" ]]; then
-include 'src/colors/colors.sh'
-fi
-
-if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
-include 'src/colors/prompt.sh'
-fi
-
+include_once 'src/colors/colors.sh' 'src/colors/prompt.sh'
 
 
 # colorize_console: self explanatory, see $helpmsg for argument options.
-
 colorize_output() {
     local helpmsg=("
         Usage: colorize_output [-options] ... [text] \n

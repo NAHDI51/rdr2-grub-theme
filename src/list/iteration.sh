@@ -18,23 +18,11 @@
 # <li> type, like 1,a, or A. This file is created with the intention
 # to use it in a choice-based system. 
 
-# Define source code variable: __ITERATION_SH
-if [[ "$__ITERATION_SH" -ne "1" ]]; then
-__ITERATION_SH=1
-fi
 
 # Include include
-. $(dirname "$0")/src/include.sh
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+include_once 'src/colors/colorize_output.sh' 'src/colors/prompt.sh'
 
-# Dependencies
-
-if [[ $(echo -en $__COLORIZE_OUTPUT_SH) -eq "" ]]; then
-include 'src/colors/colorize_output.sh'
-fi
-
-if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
-include 'src/colors/prompt.sh'
-fi 
 
 # Iterate: iteraties through the ordered list specified
 # Check helpmsg for all details. 

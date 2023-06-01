@@ -3,39 +3,10 @@
 # Include include
 . $(dirname "$0")/src/include.sh
 
-# Include external dependencies
+include_once 'src/list/list.sh' 'src/colors/prompt.sh' 'src/thumbnail.sh' 'src/list/iteration.sh' 
+include_once 'src/list/choice.sh' 'src/aliases.sh' 'src/run_as_root.sh'
 
-if [[ "$__LIST_SH" -eq "" ]]; then
-    include 'src/list/list.sh'
-fi
 
-if [[ "$__COLORIZE_OUTPUT_SH" -eq "" ]]; then 
-    include 'src/colors/colorize_output.sh'
-fi
-
-if [[ "$__PROMPT_SH" -eq "" ]]; then 
-    include 'src/prompt.sh'
-fi
-
-if [[ "$__THUMBNAIL_SH" -eq "" ]]; then 
-    include 'src/thumbnail.sh'
-fi 
-
-if [[ "$__ITERATION_SH" -eq "" ]]; then 
-    include 'src/list/iteration.sh'
-fi 
-
-if [[ "$__CHOICE_SH" -eq "" ]]; then 
-    include 'src/list/choice.sh'
-fi 
-
-if [[ "$__ALIASES_SH" -eq "" ]]; then 
-    include 'src/aliases.sh'
-fi 
-
-if [[ "$__RUN_AS_ROOT_SH" -eq "" ]]; then 
-    include 'src/run_as_root.sh'
-fi 
 
 # NOTE: for the work of this application, we can list an element eligible IFF:
 # 1. The entry is a directory. 
@@ -53,10 +24,12 @@ compfunc() {
     fi
 }
 '
+export COMMUNISM="comrade"
+echo $COMMUNISM
 
-
-run_as_root
+# run_as_root
 # echo "$compfunc"
+
 
 # list_if --help
 ARGS=$(list_if create "$compfunc")

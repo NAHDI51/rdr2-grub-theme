@@ -22,23 +22,10 @@
 # the error. This terminates the program, as it is a lethal
 # error.
 
-# Define source code variable: __LIST_SH
-if [[ "$__LIST_SH" -ne "1" ]]; then
-__LIST_SH=1
-fi
 
 # Include include
-. $(dirname "$0")/src/include.sh
-
-# Dependencies
-
-if [[ $(echo -en $__COLORIZE_OUTPUT_SH) -eq "" ]]; then
-include 'src/colors/colorize_output.sh'
-fi
-
-if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
-include 'src/colors/prompt.sh'
-fi 
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+include 'src/colors/colorize_output.sh' 'src/colors/prompt.sh'
 
 
 # Takes an input of a directory from the user, and

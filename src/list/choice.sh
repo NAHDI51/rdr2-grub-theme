@@ -21,26 +21,9 @@
 # will be useful, if paired up with an OL list array.
 
 # Include include 
-. $(dirname "$0")/src/include.sh
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+include_once 'src/colors/colorize_output.sh' 'src/colors/prompt.sh' 'src/aliases.sh'
 
-# Define source based variable
-if [[ "$__CHOICE_SH" -ne "1" ]]; then 
-    __CHOICE_SH=1
-fi 
-
-# Dependencies
-
-if [[ $__COLORIZE_OUTPUT_SH -eq "" ]]; then
-include 'src/colors/colorize_output.sh'
-fi
-
-if [[ $__PROMPT_SH -eq "" ]]; then
-include 'src/colors/prompt.sh'
-fi 
-
-if [[ "$__ALIASES_SH" -eq "" ]]; then 
-    include 'src/aliases.sh'
-fi 
 
 # Asks for the choice
 askChoices() { 

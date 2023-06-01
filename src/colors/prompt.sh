@@ -4,19 +4,9 @@
 # according to their indication (e.g info, error, warning). See
 # helpmsg for more details
 
-# define header: _COLORIZE_OUTPUT_SH
-if [[ $(echo -en $__PROMPT_SH) -eq "" ]]; then
-__PROMPT_SH="1"
-fi
-
 # dependency: include.sh
-. $(dirname "$0")/src/include.sh
-
-# Dependencies
-
-if [[ $(echo -en $__COLORIZE_OUTPUT_SH) -eq "" ]]; then
-include 'src/colors/colorize_output.sh'
-fi
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+include_once 'src/colors/colorize_output.sh'
 
 
 prompt() {

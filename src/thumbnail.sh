@@ -23,17 +23,9 @@
 # datas are presented in this file.
 
 # Include include
-. $(dirname "$0")/src/include.sh
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+include 'src/colors/colorize_output.sh'
 
-# Header definition 
-if [[ "$__THUMBNAIL_SH" -ne "1" ]]; then
-__THUMBNAIL_SH=1
-fi
-
-# include prompt.sh
-if [[ "$__COLORIZE_OUTPUT_SH" -eq "" ]]; then 
-    include 'src/colors/colorize_output.sh'
-fi
 
 # Generated via link: https://manytools.org/hacker-tools/ascii-banner/
 # BANNER #1

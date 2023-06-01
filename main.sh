@@ -69,3 +69,8 @@ if [[ "$__RUN_AS_ROOT_SH" -eq "" ]]; then
     include 'src/run_as_root.sh'
 fi 
 
+print_thumbnail
+run_as_root 
+
+
+

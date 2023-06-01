@@ -20,17 +20,8 @@
 # whether you will run it as root or not.
 
 # Include C style dependency inclusion
-. $(dirname "$0")/src/include.sh
-
-# Equivalent to #ifndef
-if [[ $__PROMPT_SH -eq "" ]]; then
-include 'src/colors/prompt.sh'
-fi
-
-# Source header definition
-if [[ $__RUN_AS_ROOT -eq "" ]]; then
-__RUN_AS_ROOT=1
-fi
+eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+include_once 'src/colors/prompt.sh' 
 
 run_as_root()
 {

@@ -2,10 +2,6 @@
 # These variables can be used in a variety of ways, including 
 # just by using the command eval.
 
-# Header tag
-if [[ "$__ALIASES_SH" -ne "1" ]]; then 
-    __ALIASES_SH=1
-fi
 
 # Prints helpmsg with the according arguments, if asked. 
 PRINT_HELPMSG=('
