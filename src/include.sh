@@ -23,6 +23,43 @@
 # Details of NEW DESIGN has been discussed in the include_once helpmsg function.
 declare -A INCLUDED_HEADER
 
+# However, the first ever inclusion reaches a chiecken-egg problem: 
+# you'll have to do a C style inclusion with include, otherwise it'll 
+# create when you are including include over and over again. 
+
+# Fortunately, there is a workaround with export. Let's just use the export and 
+# use it all over again.
+
+if [[ $__INCLUDE_SH -eq "" ]]; then 
+    __INCLUDE_SH=1
+fi 
+
+export START_INCLUDE_BASED_SYSTEM='
+if [[ $__INCLUDE_SH -eq "" ]]; then 
+    . $(dirname "$0")/src/include.sh 
+fi
+'
+
+# eval "$START_INCLUDE_BASED_SYSTEM"
+
+
+###############################################################################
+# USAGE 
+###############################################################################
+
+# 1.
+# Use the command
+# . $(dirname "$0")/src/include.sh 
+# raw on the scripts you are trying to run. 
+
+# 2.
+# Use the command
+# $START_INCLUDE_BASED_SYSTEM
+# on the scripts you are trying to include.
+
+# Alternatively, you can suppress the STDERR
+# eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
+
 
 # parameters
 # $0 = name of the file, from which the function is called
@@ -53,9 +90,6 @@ include() {
         echo -e "\e[1;31mExitting\e[0m with status \e[1;31m1\e[0m"
         exit 1
     fi
-
-    # Track inclusion 
-    INCLUDED_HEADER["$FILE"]=1
 
     return $?
 }
@@ -100,9 +134,16 @@ Now the logic goes as follows:
         ;;
     esac
 
+
     # Iterate and include the files
     for FILE in "$@"; do 
+        # echo "$FILE"
         if [[ ! -v INCLUDED_HEADER["$FILE"] ]]; then 
+            # Track inclusion 
+            # Notice this pattern? DFS! $INCLUDED_HEADER works as the visited tracker.
+            INCLUDED_HEADER["$FILE"]=1
+            # echo "$FILE $INCLUDED_HEADER[$FILE]"
+
             include "$FILE"
         fi
     done 
