@@ -36,38 +36,7 @@
 . $(dirname "$0")/src/include.sh
 
 # Include external dependencies
-
-if [[ "$__LIST_SH" -eq "" ]]; then
-    include 'src/list/list.sh'
-fi
-
-if [[ "$__COLORIZE_OUTPUT_SH" -eq "" ]]; then 
-    include 'src/colors/colorize_output.sh'
-fi
-
-if [[ "$__PROMPT_SH" -eq "" ]]; then 
-    include 'src/prompt.sh'
-fi
-
-if [[ "$__THUMBNAIL_SH" -eq "" ]]; then 
-    include 'src/thumbnail.sh'
-fi 
-
-if [[ "$__ITERATION_SH" -eq "" ]]; then 
-    include 'src/list/iteration.sh'
-fi 
-
-if [[ "$__CHOICE_SH" -eq "" ]]; then 
-    include 'src/list/choice.sh'
-fi 
-
-if [[ "$__ALIASES_SH" -eq "" ]]; then 
-    include 'src/aliases.sh'
-fi 
-
-if [[ "$__RUN_AS_ROOT_SH" -eq "" ]]; then 
-    include 'src/run_as_root.sh'
-fi 
+include 'src/colors/col
 
 print_thumbnail
 run_as_root 
