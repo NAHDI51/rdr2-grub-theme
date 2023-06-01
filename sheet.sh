@@ -61,4 +61,7 @@ iterate 'a' ${ARGS[@]}
 
 # choiceRange --help
 
-choiceYN
+# choiceYN
+
+choiceRange 1 10
+echo "Your choice is: $RETURN_VALUE"
