@@ -1,17 +1,3 @@
-# Copyright (C) 2023 NAHDI51
-#
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program.  If not, see <http://www.gnu.org/licenses/>.
-
 #!/bin/bash
 
 
@@ -96,12 +82,12 @@ colorize_output() {
 
     # Damn this control flow prove to be a real pain in the ass
     local ARGS=()
+    local ARG=''
     for ARG in "$@"
     do
         #append ARGS
         ARGS[${#ARGS[@]}]=$ARG
     done
-    unset ARG
 
     # Print ARGS
     # for ((i=0; i<${#ARGS[@]}; i++))
@@ -113,8 +99,8 @@ colorize_output() {
     local FGCOL=0
     local BGCOL=0
     local FORM=-1
-
-    for  (( i=0; i<$#; i++)); do
+    local i=0 
+    for  ((i=0; i<$#; i++)); do
         local GROUND=-1
         local COLOR=""
         local FORMAT="-1"
@@ -243,7 +229,6 @@ colorize_output [OPTION] [FORMAT] [COLOR]
                 "--white")
                     COLOR=${WHITE[GROUND]} ;;
                 *)     
-                    echo -e "Reached here."
                     let "i--"
                     errmsg=("
                     colorize_output: Color not spcified with the argument "${ARGS[i]}". Omitting the argument.
@@ -330,8 +315,6 @@ colorize_output [OPTION] [FORMAT] [COLOR]
         let "i--"
     done
 
-    # Stop using i as a global variable, and stop upon the iteration.
-    unset i
     # Last wrap around: if any of the options are not specified
 
     local FINAL=""

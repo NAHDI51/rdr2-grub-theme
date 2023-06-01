@@ -131,7 +131,7 @@ Run iterate --help to view this message.
         fi
 
         # Why did I ever choose to torture myself with bash script T_T
-        colorize_output -F --red -B --black "$char." && i=$idx
+        colorize_output -F --red "$char." && i=$idx
         colorize_output -F --blue "${ARGS[i]}" && i=$idx
         echo -en "\n"
     done

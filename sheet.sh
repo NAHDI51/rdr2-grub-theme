@@ -33,6 +33,10 @@ if [[ "$__ALIASES_SH" -eq "" ]]; then
     include 'src/aliases.sh'
 fi 
 
+if [[ "$__RUN_AS_ROOT_SH" -eq "" ]]; then 
+    include 'src/run_as_root.sh'
+fi 
+
 # NOTE: for the work of this application, we can list an element eligible IFF:
 # 1. The entry is a directory. 
 # 2. The entry directory has a file called "theme.txt". This will work as our
@@ -50,6 +54,8 @@ compfunc() {
 }
 '
 
+
+run_as_root
 # echo "$compfunc"
 
 # list_if --help

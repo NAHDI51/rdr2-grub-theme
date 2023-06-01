@@ -58,12 +58,12 @@ askChoices() {
     while (( $CHOICE_NOT_CHOSEN == 1 )); do 
         
         if (( $LAST_ERROR == 1)); then 
-            colorize_output -F --red -B --black "$ERR_PROMPT "
+            colorize_output -F --red "$ERR_PROMPT "
         fi 
         
         # Prmopting
-        colorize_output -B --black -F --blue   "$MAIN_PROMPT "
-        colorize_output -B --black -F --yellow "$HELP_PROMPT"
+        colorize_output -F --blue   "$MAIN_PROMPT "
+        colorize_output -F --yellow "$HELP_PROMPT"
         read -p ": " CHOICE
         # End prompting
 
@@ -73,7 +73,7 @@ askChoices() {
         # invalid choice: continue the loop.
 
         if [[ "$CHOICE" == '~' ]]; then 
-            colorize_output -F --green -B --black "Choices:"
+            colorize_output -F --green -B "Choices:"
             echo -en "\n"
 
             # Get the sorted keys
@@ -135,7 +135,7 @@ This call consideres 7 individual choices: a, b, c, f, 1, 2, and 6.
 
         # If the element already exists 
         if [[ -v CHOICES["${ARGS[i]}"] ]]; then 
-            colorize_output -F --red -B --black "$LOG_HEADER: Warning: '${ARGS[i]}' has multiple instances.\n"
+            colorize_output -F --red "$LOG_HEADER: Warning: '${ARGS[i]}' has multiple instances.\n"
             i=$idx   # Avoid global variable collilsion
             continue 
         fi 
@@ -190,7 +190,7 @@ This will query between the choices: [1-29].
     local LOG_HEADER="src/list/choice.sh/choiceRange()"
 
     if [[ $# -ne 2 ]]; then
-        colorize_output -B --red -F --black "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n"
+        colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n"
         return 127
     fi
 
@@ -208,13 +208,13 @@ This will query between the choices: [1-29].
     elif [[ "$START" =~ ^-?[1-9][0-9]*$ && "$END" =~ ^-?[1-9][0-9]*$ ]]; then
         TYPE="numeric"
     else
-        colorize_output -B --red -F --black "$LOG_HEADER: ERROR: START and END variables are not of the same type. \n"
+        colorize_output -F --red "$LOG_HEADER: ERROR: START and END variables are not of the same type. \n"
         return 127
     fi
 
     # START <=END
     if [[ "$START" -gt "$END" ]]; then
-        colorize_output -B --red -F --black "$LOG_HEADER: ERROR: START value cannot be greater than END value. \n"
+        colorize_output -F --red "$LOG_HEADER: ERROR: START value cannot be greater than END value. \n"
         return 127
     fi
 
@@ -225,7 +225,7 @@ This will query between the choices: [1-29].
         "numeric")
             CHOICES=($(seq "$START" "$END")) ;;
         *)
-            colorize_output -B --red -F --black "$LOG_HEADER: ERROR: Unknown type \n"
+            colorize_output -F --red "$LOG_HEADER: ERROR: Unknown type \n"
             return 127 ;;
     esac
 
