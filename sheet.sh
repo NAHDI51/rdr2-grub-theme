@@ -3,8 +3,7 @@
 # Include include
 . $(dirname "$0")/src/include.sh
 
-include_once 'src/list/list.sh' 'src/colors/prompt.sh' 'src/thumbnail.sh' 'src/list/iteration.sh' 
-include_once 'src/list/choice.sh' 'src/aliases.sh' 'src/run_as_root.sh'
+include_once 'src/*'
 
 
 
