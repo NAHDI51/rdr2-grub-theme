@@ -19,12 +19,10 @@
 # Check if this file has previously been defined
 # If not, define it, so that other files can include it.
 
-if [[ $(echo -e $__INCLUDE_SH) -eq '' ]]; then
-    __INCLUDE_SH="1"
-fi
 
-# handles the inclusion of other source code files.
-# Does the required error handling if error.
+# Details of NEW DESIGN has been discussed in the include_once helpmsg function.
+declare -A INCLUDED_HEADER
+
 
 # parameters
 # $0 = name of the file, from which the function is called
@@ -56,5 +54,57 @@ include() {
         exit 1
     fi
 
+    # Track inclusion 
+    INCLUDED_HEADER["$FILE"]=1
+
     return $?
+}
+
+
+
+include_once() {
+    local helpmsg=('
+include_once [FILES...]
+
+This function includes one or more bash source codes that follow the 
+designs discussed below. For each of the files, this function will
+check whether the file exists, and whether it has been included or
+not. If not included, the function will include the source code. 
+
+type include_once --help for displaying this message. 
+
+NEW DESIGN
+#################################################################
+
+There are many wrongs with the C-style inclusion. Firstly, the 
+inclusion takes a significant amount of length and readability. 
+Secondly, it introduces unnecessary amount of if and subsequent
+variables, due to which, it takes repeating the same structure.
+
+This solution involves using an associative array for the fullname
+of the file. The <string,bool> array will store true/false for 
+whether the file has been included or not.
+
+declare -A INCLUDED_HEADER
+if (( -v INCLUDE_HEADER['code.sh'] ))       # indicates that the file has been included
+
+Now the logic goes as follows:
+1. A file can be included IFF the file exists. 
+2. A file is included once IFF the INCLUDED_HEADER is 1.
+')
+    # display helpmsg if prompted. 
+    case "$1" in 
+        "-h" | "--help" | "--Help" )
+            echo "$helpmsg"
+            return 0
+        ;;
+    esac
+
+    # Iterate and include the files
+    for FILE in "$@"; do 
+        if [[ ! -v INCLUDED_HEADER["$FILE"] ]]; then 
+            include "$FILE"
+        fi
+    done 
+
 }
