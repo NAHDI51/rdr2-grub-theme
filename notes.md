@@ -12,3 +12,11 @@
     store the return value of the last called function. In this case, it will be the same 
     as passing reference in C, and using void function to manipulate the dereferenced
     variable's value.
+
+2. There are two ways to call an argument. 
+
+    1. func ${ARRAY[@]}
+    2. func "${ARRAY[@]}"s
+
+    The first will split the argument into numerous arguments, and the second will have only
+    one argument, a string of the array.
