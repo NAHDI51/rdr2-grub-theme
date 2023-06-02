@@ -54,7 +54,7 @@ fi
 
 # 2.
 # Use the command
-# $START_INCLUDE_BASED_SYSTEM
+# eval $START_INCLUDE_BASED_SYSTEM
 # on the scripts you are trying to include.
 
 # Alternatively, you can suppress the STDERR
@@ -83,7 +83,7 @@ include() {
     # for this variable
     # IMPORTANCE=$2
 
-    if [ $? == 1 ]; then
+    if (( $? != 0 )); then
         echo -e "\e[1;31mFATAL ERROR:\e[0m Could not resolve dependencies."
         echo -e "Called from \e[1;32m$SOURCE\e[0m"
         echo -e "To include \e[1;32m$FILE\e[0m"

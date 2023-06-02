@@ -80,5 +80,5 @@ PROJECT_BANNER=('
 ')
 
 print_thumbnail() {
-    colorize_output -F --red -B --black "$PROJECT_BANNER"
+    colorize_output -F --red "$PROJECT_BANNER"
 }

@@ -3,8 +3,11 @@
 # Include include
 . $(dirname "$0")/src/include.sh
 
-include_once 'src/*'
+include_once 'src/colors/colorize_output.sh' 'src/colors/colors.sh' 'src/colors/prompt.sh'
+include_once 'src/list/list.sh' 'src/list/iteration.sh' 'src/list/choice.sh'
+include_once 'src/aliases.sh' 'src/thumbnail.sh' 'src/run_as_root.sh'
 
+# echo "Reache dhere"
 
 
 # NOTE: for the work of this application, we can list an element eligible IFF:
@@ -23,17 +26,19 @@ compfunc() {
     fi
 }
 '
-export COMMUNISM="comrade"
-echo $COMMUNISM
+# export COMMUNISM="comrade"
+# echo $COMMUNISM
 
 # run_as_root
 # echo "$compfunc"
 
 
 # list_if --help
-ARGS=$(list_if create "$compfunc")
+list_if create "$compfunc"
+# echo "${#RETURN_VALUE[@]} ${RETURN_VALUE[@]}"
 # iterate 'a' 1 2 2 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1
-iterate 'a' ${ARGS[@]}
+iterate 'a' ${RETURN_VALUE[@]}
+choiceRange "Choose your option" ${RETURN_VALUE[@]}
 
 # print_thumbnail
 
@@ -41,5 +46,8 @@ iterate 'a' ${ARGS[@]}
 
 # choiceYN
 
-choiceRange 1 10
-echo "Your choice is: $RETURN_VALUE"
+# choiceRange 1 10
+# prompt -s "Your choice is: $RETURN_VALUE\n"
+
+# choiceCustom "Do you bing chill" Y N "fuck you"
+# echo "Your choice is: $RETURN_VALUE"

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright (C) 2023 NAHDI51
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -13,8 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#!/bin/bash
-
 # 1. Traverse the create folder, and list the files
 # 2. Traverse the background file for the name of the folder specified,
 #    and list the backgrounds
@@ -28,18 +28,15 @@
 # 9. Exit.
 
 
-#########################################################################
-# ADDING DEPENDENCIES
-#########################################################################
-
-# Include include
+# Dependencies
 . $(dirname "$0")/src/include.sh
 
-# Include external dependencies
-include 'src/colors/col
+include_once 'src/colors/colorize_output.sh' 'src/colors/colors.sh' 'src/colors/prompt.sh'
+include_once 'src/list/list.sh' 'src/list/iteration.sh' 'src/list/choice.sh'
+include_once 'src/aliases.sh' 'src/thumbnail.sh' 'src/run_as_root.sh'
 
-print_thumbnail
 run_as_root 
+print_thumbnail
 
 
 
