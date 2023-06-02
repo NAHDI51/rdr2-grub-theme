@@ -21,7 +21,7 @@
 
 # Include include
 eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
-include_once 'src/colors/colorize_output.sh' 'src/colors/prompt.sh'
+include_once 'src/colors/colorize_output.sh' 'src/colors/prompt.sh' 'src/aliases.sh'
 
 
 # Iterate: iteraties through the ordered list specified
@@ -128,6 +128,5 @@ Run iterate --help to view this message.
     unset i
 
     # First element, and last element
-    local RETURN_VALUE=("$first_char" "$char")
-    echo "${RETURN_VALUE[@]}"  # Return the array elements
+    RETURN_VALUE=("$first_char" "$char") # Return the array elements
 }

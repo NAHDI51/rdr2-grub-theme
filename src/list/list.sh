@@ -25,7 +25,7 @@
 
 # Include include
 eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
-include 'src/colors/colorize_output.sh' 'src/colors/prompt.sh'
+include 'src/colors/colorize_output.sh' 'src/colors/prompt.sh' 'src/aliases.sh'
 
 
 # Takes an input of a directory from the user, and
@@ -174,7 +174,8 @@ $RETURNED_LIST will be an array with the resulting strings or directories.
     if [[ ${#ENTRIES[@]} == 0 ]]; then 
         colorize_output -F --yellow -B --red "$LOG_HEADER: Warning: No entires with the specified CONDITION found.\n"
     fi
-    echo "${ENTRIES[@]}"
+    
+    RETURN_VALUE=${ENTRIES[@]}
 }
 
 

@@ -28,6 +28,7 @@ include_once 'src/colors/colorize_output.sh' 'src/colors/prompt.sh' 'src/aliases
 # Asks for the choice
 askChoices() { 
 
+    local QUESTION="$1"
     local MAIN_PROMPT="Please enter your choice"
     local HELP_PROMPT="(Press ~ to view the list of choices)"
     local ERR_PROMPT="[Invalid Choice]"
@@ -39,7 +40,8 @@ askChoices() {
     local CHOICE=''              # Choice 
 
     while (( $CHOICE_NOT_CHOSEN == 1 )); do 
-        
+        colorize_output -i -F --yellow "QUESTION: $QUESTION?\n"
+
         if (( $LAST_ERROR == 1)); then 
             colorize_output -F --red "$ERR_PROMPT "
         fi 
@@ -56,13 +58,12 @@ askChoices() {
         # invalid choice: continue the loop.
 
         if [[ "$CHOICE" == '~' ]]; then 
-            colorize_output -F --green -B "Choices:"
+            colorize_output -F --green "Choices:"
             echo -en "\n"
 
-            # Get the sorted keys
-            local SORTED_KEYS=$(echo "${!CHOICES[@]}" | tr ' ' '\t' | sort)
-            echo "$SORTED_KEYS"
-
+            for CHOICE in "${!CHOICES[@]}"; do 
+                prompt -i "$CHOICE\t"
+            done 
             echo -en "\n"
 
             LAST_ERROR=0
@@ -106,8 +107,14 @@ This call consideres 7 individual choices: a, b, c, f, 1, 2, and 6.
 @return value: the choice chosen
 ')
     eval $PRINT_HELPMSG
+
+    if (( $# < 3 )); then 
+        colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n" 
+    fi 
     
     local LOG_HEADER="src/list/choice.sh/choiceCustom()"
+    local QUESTION="$1"
+    shift 1
     local ARGS=("$@")
     local n=$#
     
@@ -132,7 +139,7 @@ This call consideres 7 individual choices: a, b, c, f, 1, 2, and 6.
     #Invoke the choice based system
     #No need to handle return value: the return value from the previous function is 
     #the return value of this function.
-    askChoices CHOICES
+    askChoices "$QUESTION" CHOICES
     unset CHOICES
 }
 
@@ -143,9 +150,9 @@ This call consideres 7 individual choices: a, b, c, f, 1, 2, and 6.
 
 choiceRange() {
     local helpmsg='
-SYNTAX: choiceRange [START] [END]
+SYNTAX: choiceRange [QUESTION] [START] [END]
 
-The choiceRange function takes two arguments, START and END, 
+The choiceRange function takes three arguments, START and END, 
 and creates a choice-based system. 
 
 START and END format
@@ -172,13 +179,14 @@ This will query between the choices: [1-29].
     eval $PRINT_HELPMSG
     local LOG_HEADER="src/list/choice.sh/choiceRange()"
 
-    if [[ $# -ne 2 ]]; then
+    if [[ $# -ne 3 ]]; then
         colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n"
         return 127
     fi
 
-    local START="$1"
-    local END="$2"
+    local QUESTION="$1"
+    local START="$2"
+    local END="$3"
 
     # Error handling
 
@@ -216,13 +224,13 @@ This will query between the choices: [1-29].
 
     #No need to handle return value: the return value from the previous function is 
     #the return value of this function.
-    choiceCustom "${CHOICES[@]}"
+    choiceCustom "$QUESTION" "${CHOICES[@]}"
 }
 
 # SElf explanatory
 choiceYN() {
     local helpmsg=('
-SYNTAX: choiceYN 
+SYNTAX: choiceYN [QUESTION]
 
 The choiceYN function creates a choice based system dependant
 on Y or N. Thus, no user argument is to be provided. 
@@ -234,7 +242,14 @@ returned value directly.
 ')  
 
     eval "$PRINT_HELPMSG"
+
+    if [[ $# -ne 1 ]]; then
+        colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n"
+        return 127
+    fi
+    local QUESTION="$1"
+
     #No need to handle return value: the return value from the previous function is 
     #the return value of this function.
-    choiceCustom y n
+    choiceCustom "$QUESTION" y n
 }
