@@ -21,22 +21,22 @@
 
 # Include C style dependency inclusion
 eval $START_INCLUDE_BASED_SYSTEM 2> /dev/null
-include_once 'src/colors/prompt.sh' 
+include_once 'src/colors/prompt.sh' 'src/list/choice.sh'
 
 run_as_root()
 {
     if [[ "$USER" != "root" ]]; then
-        prompt -w "WARNING: This program has to be run by root.\n"
-        prompt -i "Do you want to run this program as a root? [y/n]: "
-        read RESPONSE
+
+        choiceYN "Do you want to run this program as a root"
+        RESPONSE=$RETURN_VALUE
 
         case $RESPONSE in 
-            "y" | "Y" | "yes" | "Yes") 
+            "y") 
                 prompt -i "Entering the program as root.\n"
                 sudo "$0"
                 exit 0
                 ;;
-            "n" | "N" | "no" | "No")
+            "n")
                 prompt -s "Exitting the program.\n"
                 exit 0
                 ;;
