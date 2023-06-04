@@ -35,6 +35,7 @@ include_once 'src/colors/colorize_output.sh' 'src/colors/colors.sh' 'src/colors/
 include_once 'src/list/list.sh' 'src/list/iteration.sh' 'src/list/choice.sh'
 include_once 'src/aliases.sh' 'src/thumbnail.sh' 'src/run_as_root.sh'
 
+# I guess it's time to start the main thing
 run_as_root 
 print_thumbnail
 
