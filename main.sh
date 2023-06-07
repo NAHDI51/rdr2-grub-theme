@@ -35,9 +35,46 @@ include_once 'src/colors/colorize_output.sh' 'src/colors/colors.sh' 'src/colors/
 include_once 'src/list/list.sh' 'src/list/iteration.sh' 'src/list/choice.sh'
 include_once 'src/aliases.sh' 'src/thumbnail.sh' 'src/run_as_root.sh'
 
-# I guess it's time to start the main thing
-run_as_root 
-print_thumbnail
+# run_as_root 
+# print_thumbnail
+
+# List the directories
+colorize_output -F --cyan "\n\nLIST OF THEMES\n----------------\n"
+list_if 'create' "$HAS_THEME_FILE"  # List subdirectories with theme.txt file in it.
+DIRECTORIES="${RETURN_VALUE[@]}"
+
+# Get choice and index
+iterate '1' ${RETURN_VALUE[@]}      # Iterate the lists with type 1 (e.g 1, 2, 3...)
+echo -en "\n\n" 
+choiceRange 'Which theme do you want to set up' ${RETURN_VALUE[@]}   # RETURN VALUE reperesents first and last.
+CHOSEN_DIR=$(get_index $((RETURN_VALUE-1)) ${DIRECTORIES[@]})
+THEME_NAME=$(echo "$CHOSEN_DIR" | awk -F'/' '{print $NF}')
+
+# Output the update
+prompt -i "You have chosen the following theme: "
+colorize_output -F --blue "$THEME_NAME\n"
+
+# Backgrond
+BACKGROUND_DIR="wallpapers/$THEME_NAME"
+prompt -i "Searching for backgrounds in the directory: "
+colorize_output -F --blue "$BACKGROUND_DIR\n"
+
+# List the backgrounds 
+list_if "$BACKGROUND_DIR" "$IS_BACKGROUND_IMAGE"
+BACKGROUNDS="${RETURN_VALUE[@]}"
+
+# Get choice and Index
+colorize_output -F --cyan "\n\nLIST OF BACKGROUNDS\n------------------------\n"
+iterate '1' ${RETURN_VALUE[@]}
+echo -en "\n\n"
+
+choiceRange 'Which background do you want to use' ${RETURN_VALUE[@]}  # RETURN VALUE represents first and last
+CHOSEN_BACKGROUND=$(get_index $((RETURN_VALUE-1)) ${BACKGROUNDS[@]})
+
+# Output the update
+prompt -i "You have chosen the following background: "
+colorize_output -F --blue "$CHOSEN_BACKGROUND"
+
 
 
 
