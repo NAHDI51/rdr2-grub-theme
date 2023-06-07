@@ -175,7 +175,7 @@ $RETURNED_LIST will be an array with the resulting strings or directories.
         colorize_output -F --yellow -B --red "$LOG_HEADER: Warning: No entires with the specified CONDITION found.\n"
     fi
     
-    RETURN_VALUE=${ENTRIES[@]}
+    RETURN_VALUE=("${ENTRIES[@]}")
 }
 
 

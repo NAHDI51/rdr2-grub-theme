@@ -108,11 +108,14 @@ This call consideres 7 individual choices: a, b, c, f, 1, 2, and 6.
 ')
     eval $PRINT_HELPMSG
 
-    if (( $# < 3 )); then 
+    local LOG_HEADER="src/list/choice.sh/choiceCustom()"
+    check_err_arg_num $# 1
+    
+    if (( $? == 1 )); then 
         colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n" 
+        return 127
     fi 
     
-    local LOG_HEADER="src/list/choice.sh/choiceCustom()"
     local QUESTION="$1"
     shift 1
     local ARGS=("$@")
@@ -178,8 +181,9 @@ This will query between the choices: [1-29].
 '
     eval $PRINT_HELPMSG
     local LOG_HEADER="src/list/choice.sh/choiceRange()"
-
-    if [[ $# -ne 3 ]]; then
+    
+    check_err_arg_num $# 3 3
+    if (( $? == 1 )); then
         colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n"
         return 127
     fi
@@ -243,10 +247,12 @@ returned value directly.
 
     eval "$PRINT_HELPMSG"
 
-    if [[ $# -ne 1 ]]; then
+    check_err_arg_num $# 1 1
+    if (( $? == 1 )); then
         colorize_output -F --red "$LOG_HEADER: ERROR: Incorrect number of arguments. Returning with exit status 127.\n"
         return 127
     fi
+    
     local QUESTION="$1"
 
     #No need to handle return value: the return value from the previous function is 
