@@ -35,10 +35,13 @@ compfunc() {
 
 # list_if --help
 list_if create "$compfunc"
+DIRECTORIES="${RETURN_VALUE[@]}"
+echo "Directory: ${DIRECTORIES[0]}"
 # echo "${#RETURN_VALUE[@]} ${RETURN_VALUE[@]}"
 # iterate 'a' 1 2 2 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1 1 1 1 1 1 1  1 1 1 1 1
-iterate 'a' ${RETURN_VALUE[@]}
-choiceRange "Choose your option" ${RETURN_VALUE[@]}
+iterate '1' ${RETURN_VALUE[@]}
+choiceRange "Choose your option" ${RETURN_VALUE[@]}     
+get_index $((RETURN_VALUE-1)) ${DIRECTORIES[@]}
 
 # print_thumbnail
 
