@@ -130,3 +130,8 @@ NOTE: never call $ARR using quotes (e.g: "${ARR[@]}").
 
     echo "${ARR[INDEX]}"
 }
+
+# checks whether a command is available
+function has_command() {
+  command -v $1 > /dev/null
+}
