@@ -79,6 +79,21 @@ PROJECT_BANNER=('
    WRITTEN BY: NAHDI51
 ')
 
+DONE_BANNER=('                                   
+██████╗  ██████╗ ███╗   ██╗███████╗██╗
+██╔══██╗██╔═══██╗████╗  ██║██╔════╝██║
+██║  ██║██║   ██║██╔██╗ ██║█████╗  ██║
+██║  ██║██║   ██║██║╚██╗██║██╔══╝  ╚═╝
+██████╔╝╚██████╔╝██║ ╚████║███████╗██╗
+╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝
+Github repository: https://github.com/NAHDI51/rdr2-grub-theme
+Please leave a star if you like the project!
+')                                  
+
 print_thumbnail() {
     colorize_output -F --red "$PROJECT_BANNER"
+}
+
+print_footer() {
+    colorize_output -F --green "$DONE_BANNER"
 }
