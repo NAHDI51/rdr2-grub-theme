@@ -34,9 +34,10 @@
 include_once 'src/colors/colorize_output.sh' 'src/colors/colors.sh' 'src/colors/prompt.sh'
 include_once 'src/list/list.sh' 'src/list/iteration.sh' 'src/list/choice.sh'
 include_once 'src/aliases.sh' 'src/thumbnail.sh' 'src/run_as_root.sh'
+include_once 'src/update_grub.sh'
 
-# run_as_root 
-# print_thumbnail
+run_as_root 
+print_thumbnail
 
 # List the directories
 colorize_output -F --cyan "\n\nLIST OF THEMES\n----------------\n"
@@ -73,7 +74,128 @@ CHOSEN_BACKGROUND=$(get_index $((RETURN_VALUE-1)) ${BACKGROUNDS[@]})
 
 # Output the update
 prompt -i "You have chosen the following background: "
-colorize_output -F --blue "$CHOSEN_BACKGROUND"
+colorize_output -F --blue "$CHOSEN_BACKGROUND\n\n"
+
+# Create tarball or not
+prompt -i "[INFO]: creating tarball will let you use grub-customizer to setup the theme.\n"
+choiceYN "Do you want to create a tarball in the build directory"
+CREATE_TARBALL=$RETURN_VALUE
+echo -en "\n\n"
+
+##########################################################
+# Check for the existance of the theme
+##########################################################
+
+GRUB_THEME_DIR='/usr/share/grub/themes'
+OVERWRITE='no'
+if [[ -d  "$GRUB_THEME_DIR/$THEME_NAME" ]]; then 
+    prompt -w "Warning: Theme $THEME_NAME already exists in the $GRUB_THEME_DIR directory.\n"
+    choiceCustom "quit or overwrite" 'quit' 'overwrite'
+
+    if [[ $RETURN_VALUE == 'quit' ]]; then 
+        prompt -s "Changes will not be applied. Exitting the program with return value 0.\n"
+        return 0
+    fi
+
+    OVERWRITE='yes'
+    prompt -i "You have chosen to overwrite the theme: "
+    colorize_output -F --blue "$GRUB_THEME_DIR/$THEME_NAME"
+fi
+
+echo -en "\n\n"
+
+########################################################
+# Create chosen configurations
+#######################################################
+
+CONFIGURATIONS="Chosen theme: $THEME_NAME"
+CONFIGURATIONS[${#CONFIGURATIONS[@]}]="Chosen background: $CHOSEN_BACKGROUND"
+
+if [[ $CREATE_TARBALL == 'y' ]]; then 
+    CONFIGURATIONS[${#CONFIGURATIONS[@]}]="Tarball file will be created."
+else 
+    CONFIGURATIONS[${#CONFIGURATIONS[@]}]="Tarball file will not be created."
+fi 
+
+if [[ $OVERWRITE == 'yes' ]]; then 
+    CONFIGURATIONS[${#CONFIGURATIONS[@]}]="Theme directory exists, and will be overwritten."
+else 
+    CONFIGURATIONS[${#CONFIGURATIONS[@]}]="Theme dir doesn't exist, and will be created."
+fi
+# List the configurations
+colorize_output -F --cyan "CONFIGURATIONS\n--------------\n"
+iterate '1' "${CONFIGURATIONS[@]}"
+echo -en "\n\n"
+
+
+###################################
+#Confirmation
+###################################
+
+choiceYN "Are these settings okay"
+CONFIRM_FINAL=${RETURN_VALUE}
+echo -en "\n\n"
+
+if [[ $CONFIRM_FINAL == 'n' ]]; then 
+    prompt -s "Changes will not be applied. Exitting the program with return value 0.\n"
+    return 0
+fi 
+
+
+###################################
+# PROCEDURE
+###################################
+
+colorize_output -F --cyan --bold "Beginning the procedure.\n"
+
+# Copy background to the dir file
+cp $CHOSEN_BACKGROUND "create/$THEME_NAME/background.png"
+prompt -i "Copied $CHOSEN_BACKGROUND to create/$THEME_NAME.\n"
+
+# Create tar file
+if [[ $CREATE_TARBALL == 'y' ]]; then 
+    if [[ ! -d build ]]; then 
+        mkdir build
+    fi 
+    tar -czf build/arthur-morgan.tar.gz create/arthur-morgan
+    prompt -i "Created the tar file of the theme.\n"
+fi
+
+# Copy to the theme files
+
+# Overwrite
+if [[ $OVERWRITE == 'y' ]]; then 
+    rm -rf $GRUB_THEME_DIR/$THEME_NAME 
+    prompt -i "Deleted the previous theme entry.\n"
+fi 
+
+mkdir -p "$GRUB_THEME_DIR/$THEME_NAME"
+cp -a create/"$THEME_NAME"/* "$GRUB_THEME_DIR/$THEME_NAME"
+prompt -i "Installed $THEME_NAME.\n"
+
+# Backup grub config
+cp -a /etc/default/grub /etc/default/grub.bak
+prompt -i "Backed the previous grub file up.\n"
+
+#Setting theme
+grep "GRUB_THEME=" /etc/default/grub 2>&1 >/dev/null && sed -i '/GRUB_THEME=/d' /etc/default/grub
+echo "GRUB_THEME=\"$GRUB_THEME_DIR/$THEME_NAME/theme.txt\"" >> /etc/default/grub
+prompt -i "Setted the grub theme.\n"
+
+# Update grub
+prompt -i "Updating the grub\n"
+grub-update
+print_footer
+
+
+
+
+
+
+
+
+
+
 
 
 
