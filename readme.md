@@ -196,7 +196,7 @@ grub-update
 Run this script.
 ```Bash
 sudo chmod +x grub-update.sh
-./grub-update.sh
+sudo ./grub-update.sh
 ```
 And the theme is installed in your system.
 
