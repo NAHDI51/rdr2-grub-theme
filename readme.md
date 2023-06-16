@@ -19,11 +19,11 @@ Make your Grub look like you are inside the game.
 
 There are many ways to install this theme. 
 
-## **Installation via GRUB-Customizer**
+## Prerequisites
 
 Required packages:
 * [git](https://github.com/git-guides/install-git) 
-* [grub-customizer](https://www.javatpoint.com/grub-customizer-ubuntu)
+
 
 ### Installing git
 
@@ -48,6 +48,35 @@ $ sudo yum install git
 $ sudo pacman -S git
 
 ```
+
+
+## **Installation via Script**
+<hr><br>
+The script provides a nice Cli based prompt for simple installation of the themes, including multiple choice prompts and backgrounds, and the ability to create tarball based on different specifications.
+
+<br>
+
+### Cloning the repository
+```
+$ git clone https://github.com/NAHDI51/rdr2-grub-theme.git
+```
+
+### Navigating to the cloned directory and Running the script
+```
+cd rdr2-grub-theme
+sudo chmod +x main.sh
+./main.sh
+```
+
+Running this script, you'll be prompted to a multiple-choice based system, which is mostly self explanatory.
+
+<br>
+
+## **Installation via GRUB-Customizer**
+<hr><br>
+
+Required packages
+* [grub-customizer](https://www.javatpoint.com/grub-customizer-ubuntu)
 
 ### Installing grub-customizer
 
