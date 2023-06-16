@@ -1,13 +1,25 @@
  
-# Grub Themes: Red Dead Redemption 2
+# **Grub Themes: Red Dead Redemption 2**
 
 Make your Grub look like you are inside the game.
 
-# Installation
+# **Previews**
+|    |    |    |
+|:-------:|:-------:|:---------:|
+|![abigail-roberts](preview/abigail_roberts/1920x1080.png)|![arthur-morgan](preview/arthur-morgan/1920x1080.png)|![bill-williamson](preview/bill_williamson/1920x1080.png)|
+|**Abigail Roberts**|**Arthur Morgan**|**Bill Williamson**|
+|![charles_smith](preview/charles_smith/1920x1080.png)|![dutch_van_der_linde](preview/dutch_van_der_linde/1920x1080.png)|![hosea_matthews](preview/hosea_matthews/1920x1080.png)|
+|**Charles Smith**|**Dutch Van Der Linde**|**Hosea Matthews**|
+|![john-marston](preview/john-marston/1920x1080.png)|![lenny](preview/mary_beth/1920x1080.png)|![micah-bell](preview/micah_bell/1920x1080.png)|
+|**John Marston**|**Lenny**|**Micah Bell**|
+|![sadie-adler](preview/sadie_adler/1920x1080.png)|![simon-pearson](preview/simon_pearson/1920x1080.png)|![uncle](preview/uncle/1920x1080.png)|
+|**Sadie Adler**|**Simon Pearson**|**Uncle**|
+
+# **Installation**
 
 There are many ways to install this theme. 
 
-## Installation via GRUB-Customizer
+## **Installation via GRUB-Customizer**
 
 Required packages:
 * [git](https://github.com/git-guides/install-git) 
